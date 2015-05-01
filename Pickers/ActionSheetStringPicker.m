@@ -131,20 +131,26 @@
     return self.data.count;
 }
 
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
     id obj = (self.data)[(NSUInteger) row];
-
-    // return the object if it is already a NSString,
-    // otherwise, return the description, just like the toString() method in Java
-    // else, return nil to prevent exception
-
+    UILabel* lbl = (UILabel*)view;
+    
+    if (!lbl) {
+        lbl = [[UILabel alloc] init];
+        [lbl setFont:[UIFont systemFontOfSize:16]];
+        [lbl setAdjustsFontSizeToFitWidth:YES];
+        [lbl setMinimumScaleFactor:0.5f];
+        lbl.numberOfLines = 3;
+        lbl.textAlignment = NSTextAlignmentCenter;
+    }
+    
     if ([obj isKindOfClass:[NSString class]])
-        return obj;
-
+        lbl.text = obj;
+    
     if ([obj respondsToSelector:@selector(description)])
-        return [obj performSelector:@selector(description)];
-
-    return nil;
+        lbl.text = [obj performSelector:@selector(description)];
+    
+    return lbl;
 }
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
